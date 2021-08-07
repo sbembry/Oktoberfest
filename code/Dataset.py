@@ -1,12 +1,21 @@
 import cv2
+import numpy as np
+import albumentations as A
 import torch
 from torch.utils.data import Dataset
 
 
 class OktoberfestDataset(Dataset):
-    def __init__(self, lines, path):
+    def __init__(self, lines, path, augment=False):
         self.lines = lines
         self.path = path
+        self.transform = A.Compose([A.HorizontalFlip(p=.5),
+                                    A.Rotate(limit = 30, 
+                                             border_mode = cv2.BORDER_CONSTANT, 
+                                             value = 0.0, p = 0)
+                                    ], bbox_params=A.BboxParams(format='coco'))
+        self.augment = augment
+        self.normalize = A.Normalize()
     
     def __len__(self):
         return len(self.lines)
@@ -18,18 +27,20 @@ class OktoberfestDataset(Dataset):
         img = cv2.cvtColor(cv2.imread(fname), cv2.COLOR_BGR2RGB)
         
         num = int(row[1])
-        boxes, labels = [], []
-        for i in range(2, 2+5*num, 5):
-            labels.append(int(row[i]))
-            xmin, ymin = [float(n) for n in row[i+1: i+3]]
-            xmax, ymax = [p + float(l) for p, l in zip([xmin,ymin], row[i+3:i+5])]
-            boxes.append([xmin, ymin, xmax, ymax])
+        boxes = [[float(n) for n in row[i+1:i+5]] + [int(row[i])] for i in range(2, 2+5*num, 5)]
+        if self.augment:
+            transformed = self.transform(image=img, bboxes=boxes)
+            out = self.normalize(**transformed)
+        else:
+            out = self.normalize(image=img, bboxes=boxes)
         
-        boxes = torch.tensor(boxes)
-        labels = torch.tensor(labels)
+        img = out['image']
+        bboxes = out['bboxes'][0][:4]
+        labels = out['bboxes'][0][-1]
+        img = np.float32(np.transpose(img, [2,0,1]))
         
         target ={}
-        target['boxes'] = boxes
-        target['labels'] = labels
+        target['boxes'] = torch.tensor(bboxes)
+        target['labels'] = torch.tensor(labels)
         
-        return img, target
+        return torch.tensor(img), target
