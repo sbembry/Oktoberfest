@@ -35,8 +35,11 @@ class OktoberfestDataset(Dataset):
             out = self.normalize(image=img, bboxes=boxes)
         
         img = out['image']
-        bboxes = out['bboxes'][0][:4]
-        labels = out['bboxes'][0][-1]
+        bboxes = []
+        labels = []
+        for i in range(len(boxes)):
+            bboxes.append(out['bboxes'][i][:4])
+            labels.append(out['bboxes'][i][-1] + 1) # Make 0 be background
         img = np.float32(np.transpose(img, [2,0,1]))
         
         target ={}
