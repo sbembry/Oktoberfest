@@ -7,8 +7,8 @@ from torch.utils.data import Dataset
 
 class OktoberfestDataset(Dataset):
     max_boxes = 10
-    #show = False
-    def __init__(self, lines, path, resize=(540, 960), augment=False, inference=False):
+
+    def __init__(self, lines, path, resize=(540, 960), augment=False, inference=False, include_orig=False):
         """
         Creates Dataset with bboxes and labels
         lines: list of lines in csv containing img path and bboxes
@@ -33,17 +33,16 @@ class OktoberfestDataset(Dataset):
         self.augment = augment
         self.normalize = A.Normalize()
         self.inference = inference
+        self.include_orig = include_orig
     
     def __len__(self):
         return len(self.lines)
     
     def __getitem__(self, idx):
-        row = self.lines[idx][:-1].split(' ')
-        
+        row = self.lines[idx].strip().split(' ')
         fname = f'{self.path}/{row[0]}'
         img = cv2.cvtColor(cv2.imread(fname), cv2.COLOR_BGR2RGB)
         if self.inference:
-            print('here')
             img = self.resize(image=img)#['image']
             normalized_image = self.normalize(**img)['image']
             normalized_image = np.float32(np.transpose(normalized_image, [2,0,1]))
@@ -67,4 +66,9 @@ class OktoberfestDataset(Dataset):
         input_annots = np.ones((self.max_boxes, 5), dtype=np.float32) * (-1)
         input_annots[:bboxes.shape[0], :] = bboxes
         img = np.float32(np.transpose(img, [2,0,1]))
-        return torch.tensor(img), torch.tensor(input_annots)
+        if self.include_orig:
+            return torch.tensor(img), torch.tensor(input_annots), torch.tensor(orig)
+        else:
+            return torch.tensor(img), torch.tensor(input_annots)
+
+    

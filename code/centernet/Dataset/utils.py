@@ -22,6 +22,11 @@ def load_train_data(path, random_state=1):
     
     return train_data, val_data
 
-def get_data_loader(data, path, augment=False, inference=False, shuffle=True, batch_size=16):
-    ds = OktoberfestDataset(data, path=path, augment=augment, inference=inference)
+def load_test_data(path, fname='files.txt', batch_size=1):
+    with open(f'{path}/{fname}') as f:
+        data = f.readlines()
+    return get_data_loader(data, path, shuffle=False, batch_size=batch_size, include_orig=True)
+
+def get_data_loader(data, path, augment=False, inference=False, shuffle=True, batch_size=16, include_orig=False):
+    ds = OktoberfestDataset(data, path=path, augment=augment, inference=inference, include_orig=include_orig)
     return DataLoader(ds, batch_size=batch_size, shuffle=shuffle)
