@@ -4,8 +4,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from dl_lib.layers import ShapeSpec
-from dl_lib.structures import Boxes, ImageList, Instances
+from model.layers import ShapeSpec
+from model.structures import Boxes, ImageList, Instances
 
 from .generator import CenterNetDecoder, CenterNetGT
 from .loss import modified_focal_loss, reg_l1_loss

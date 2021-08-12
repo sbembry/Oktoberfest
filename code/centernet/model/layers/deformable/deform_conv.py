@@ -8,8 +8,8 @@ from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.nn.modules.utils import _pair
 
-from dl_lib import _C
-from dl_lib.layers.wrappers import _NewEmptyTensorOp
+from model import _C
+from model.layers.wrappers import _NewEmptyTensorOp
 
 
 class _DeformConv(Function):

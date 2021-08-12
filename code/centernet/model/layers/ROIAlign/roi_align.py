@@ -4,7 +4,7 @@ from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.nn.modules.utils import _pair
 
-from dl_lib import _C
+from model import _C
 
 
 class _ROIAlign(Function):

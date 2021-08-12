@@ -6,7 +6,7 @@ from ast import literal_eval
 from colorama import Back, Fore
 from easydict import EasyDict as edict
 
-from dl_lib.utils.config_helper import (_assert_with_logging,
+from model.utils.config_helper import (_assert_with_logging,
                                         _check_and_coerce_cfg_value_type,
                                         diff_dict, find_key, highlight, update)
 

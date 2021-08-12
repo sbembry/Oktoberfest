@@ -6,7 +6,7 @@ import torch.distributed as dist
 from torch import nn
 from torch.autograd.function import Function
 
-from dl_lib.utils import comm
+from model.utils import comm
 
 from .wrappers import BatchNorm2d
 
