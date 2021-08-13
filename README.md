@@ -10,6 +10,41 @@ We split the training data into training and validation sets to evaluate the mod
 
 ## Faster RCNN
 
+### About
+
+Faster R-CNN is an improvement on the earlier Fast R-CNN. It proposes regions in a much more efficient way by utilizing a Regional Proposal Network (RPN) to generate proposals instead of the more expensive selective search.
+
+The main stages invovled in Faster R-CNN is as follows:
+
+1. Initial convolutional layers to extract feature maps of the image to be shared by the RPN and Fast R-CNN Networks.
+2. Regional Proposal Network generates region proposals and extractss a fixed length feature vector for each region using a ROI Pooling layer.
+3. Feature vectors are then classified using the Fast R-CNN architecture. Class scores and bounding boxes are returned.
+
+The RPN network is the key part of the architecture that differnetaties it from the previous Fast R-CNN. The RPN works as follows:
+
+1. Anchor points are set up throughout the feature map and the RPN slides a window over each anchor location. 
+2. For each anchor point K amount of proposals are generated. K is equal to the number of scales and aspect ratios that are chosen. So for 4 different scales and 4 different scales a total of 16 proposals would be generated for each anchor point.
+3. Then the anchors are assinged a label representing whether the region is an object or not. This is done by choosing anchors with highest intersection-over-union with a ground truth box or anchors with IoU >= 0.7.
+
+<b> Advantages </b>
+
+1. Much Faster
+2. Sharing of convolutional layers allows for a unified network where the RPN and Fast R-CNN are trained at once.
+3. Addition of anchors that allow layer sharing.
+
+</b> Disadvantages </b>
+
+1. Since all samples are taken from a single image they may be correlated and take time for the network to converge
+
+### Training
+
+The training that I went through as well as the results on the test set are in [this notebook](code/faster_rcnn/faster_rcnn.ipynb). Much of the code is from the torchvision package and can be found in torchvision/references/detection. Some changes to the code had to be made in those files to work with our data. 
+
+### Results
+
+The model that was trained achieved a COCO-style mAP of .425 on the validation set after 7 epochs. And on the test set achieved a recall score of 0.851.
+
+If I had more time I would have focused on flushing out the post-processing and interpreting the results in a better cleaner way.
 
 ## CenterNet
 
