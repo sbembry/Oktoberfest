@@ -77,6 +77,4 @@ My final model was run through 40 epochs with a final loss of .4 on the validati
 
 This notebook has examples on how to make predictions on images. However, I did not have a lot of time to do the significant amount of post-processing that is needed for object detection models. If I were to continue to work on this project, I would focus on working on this post-processing. Some things that I would do in order of importance are:
 
-1. More properly choose bounding boxes without "cheating" by looking at the ground truth.
-2. Currently, my model can predict multiple classes for the same bounding box. My processing right now does not account for this. I need to choose the class with the highest score when this occurs.
-3. After I finish 1 and 2, I can work more on analyzing my results because I will have a streamlined prediction pipeline. Using this, I can calculate metrics (IOU, PR) that are comparable across networks.
+I can work more on analyzing my results because I will have a streamlined prediction pipeline. Using this, I can calculate metrics (IOU, PR) that are comparable across networks.
